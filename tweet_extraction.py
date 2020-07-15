@@ -2,11 +2,11 @@ from tweepy import StreamListener
 from tweepy import OAuthHandler, API, Stream
 import pandas as pd
 import time
-import key
+import re, key
 
 time_tweet = 60                                                     # time period to collect tweets. (sec)
 csv_file_path = 'file-handling/first_tweet_extraction.csv'          # file where tweets are stored.
-hashtag_list = ['#WhatsApp']
+hashtag_list = ['Death Penalty']
 
 # Twitter Access
 auth = OAuthHandler(key.CONSUMER_KEY, key.CONSUMER_SECRET)
@@ -49,7 +49,7 @@ def create_csv_file():
     # Adding to dataframe
     df = pd.DataFrame(dataset, columns=['user_screen_name', 'Username', 'user_location', 'tweet_id', 'user_id',
                                         'created_at', 'text'])
-    # df = remove_duplicate(df)
+    df = remove_duplicate(df)
     print(df)
     df.to_csv(csv_file_path)
     return df
@@ -59,11 +59,13 @@ def create_csv_file():
 def remove_duplicate(df):
     duplicated_id = []
     tweet_check_list = []
-    i = 1
+    i = 0
     all_tweets = df['text'].to_list()
 
     for current_tweet in all_tweets:
         # If tweet doesn't exist in the list
+        current_tweet = re.sub('RT[^>]+: ', '', current_tweet)
+        df.at[i, 'text'] = current_tweet
         if current_tweet not in tweet_check_list:
             tweet_check_list.append(current_tweet)
         else:

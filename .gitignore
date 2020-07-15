@@ -7,3 +7,5 @@ datastories.twitter.300d.txt
 datastories-semeval2017-task4/
 .idea/
 key.py
+__pycache__/
+file-handling/first_tweet_extraction.csv
